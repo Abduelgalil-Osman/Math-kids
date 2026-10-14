@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Educational Games 🎮 | Number Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yellow:#FFD93D; --blue:#29A9E1; --pink:#FF6FA5; --green:#4CAF50;
+  --purple:#9B72CF; --orange:#FF9F45; --ink:#1E3A5F; --shadow:0 10px 0 rgba(30,58,95,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:20px}
+body{font-family:'Baloo 2','Fredoka',sans-serif;background:linear-gradient(180deg,#CDEFFF 0%,#AEE3FF 40%,#D8F5FF 100%);color:var(--ink);min-height:100vh;font-size:1.15rem;line-height:1.6;overflow-x:hidden}
+body::before{content:"☁️ ⛅ ☁️";position:fixed;top:64px;left:0;right:0;text-align:center;font-size:2.4rem;opacity:.55;z-index:-1;letter-spacing:2rem}
+header{position:sticky;top:0;z-index:50;background:linear-gradient(90deg,#FF6FA5,#9B72CF,#29A9E1,#4CAF50);padding:14px 18px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.nav{max-width:1150px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{background:#fff;border-radius:50px;padding:10px 26px;font-weight:800;font-size:1.5rem;box-shadow:var(--shadow);white-space:nowrap;text-decoration:none;color:var(--ink)}
+.links{display:flex;gap:10px;flex-wrap:wrap}
+.links a{background:rgba(255,255,255,.95);color:var(--ink);text-decoration:none;font-weight:800;padding:12px 22px;border-radius:50px;font-size:1.1rem;border:3px solid transparent;transition:.2s}
+.links a:hover{transform:rotate(-2deg) scale(1.08);border-color:#fff}
+.links a.here{background:var(--ink);color:#fff}
+#menuBtn{display:none;background:#fff;border:none;font-size:2rem;border-radius:14px;padding:6px 18px;cursor:pointer}
+.hero{max-width:1150px;margin:26px auto;padding:10px 16px;text-align:center}
+.hero-card{background:#fff;border:5px dashed var(--pink);border-radius:36px;padding:42px 26px;box-shadow:var(--shadow)}
+.hero-card h1{font-size:clamp(2rem,6vw,3.4rem);line-height:1.35}
+.hero-card h1 span{background:linear-gradient(90deg,var(--pink),var(--purple),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-card p{font-size:clamp(1.2rem,3.5vw,1.6rem);margin:14px 0 6px;font-weight:600}
+.mascots{font-size:clamp(2.6rem,8vw,4rem);animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.btn{display:inline-block;border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:1.4rem;color:#fff;padding:18px 40px;border-radius:60px;margin:8px;box-shadow:0 7px 0 rgba(0,0,0,.2);transition:.15s;text-decoration:none;min-height:64px}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.btn-pink{background:linear-gradient(180deg,#ff8fb5,var(--pink))}
+.btn-blue{background:linear-gradient(180deg,#7cd4ff,#1E88C8)}
+.btn-green{background:linear-gradient(180deg,#8ede92,#2E9E44)}
+.btn-yellow{background:linear-gradient(180deg,#ffe27a,#F5B301);color:#5a4300}
+.btn-orange{background:linear-gradient(180deg,#ffbe78,var(--orange))}
+.stars-bar{max-width:1150px;margin:0 auto;padding:0 16px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.score-chip{background:#fff;border-radius:50px;padding:12px 28px;font-weight:800;box-shadow:var(--shadow);font-size:1.3rem;border:4px solid var(--yellow)}
+main{max-width:1150px;margin:auto;padding:16px}
+section.card{background:#fff;border-radius:32px;padding:34px 24px;margin:26px 0;box-shadow:var(--shadow);border-bottom:12px solid #eee;overflow:hidden}
+section.card h2{font-size:clamp(1.7rem,5vw,2.5rem);margin-bottom:8px}
+section.card .sub{color:#4a6a94;margin-bottom:18px;font-weight:600;font-size:1.25rem}
+.badge{display:inline-block;color:#fff;font-weight:800;border-radius:50px;padding:8px 26px;margin-bottom:12px;font-size:1.2rem}
+.b-pink{background:var(--pink)} .b-blue{background:#1E88C8} .b-green{background:#2E9E44}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
+label.big{font-weight:800;font-size:1.25rem}
+select{font-family:inherit;font-size:1.2rem;font-weight:700;text-align:center;border:4px solid #C9D8F5;border-radius:20px;padding:14px 20px;outline:none;background:#F7FBFF;min-height:64px;max-width:90vw}
+.feedback{min-height:70px;text-align:center;font-size:1.5rem;font-weight:800;margin-top:14px}
+.feedback.good{color:#2E9E44}.feedback.bad{color:#E2456B}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.quiz-big{background:linear-gradient(135deg,#E8F9EE,#E3F4FF);border-radius:24px;text-align:center;padding:28px;font-size:clamp(2.6rem,9vw,4.2rem);font-weight:800;margin:12px 0}
+/* Balloon pop */
+.balloons{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.balloon{font-size:1.4rem;font-weight:800;border:none;cursor:pointer;font-family:inherit;color:#fff;border-radius:50% 50% 50% 50%/55% 55% 45% 45%;width:130px;height:160px;box-shadow:0 7px 0 rgba(0,0,0,.2);transition:.15s;position:relative}
+.balloon:active{transform:scale(.92)}
+.balloon .n{font-size:2.4rem;display:block}
+.b1{background:linear-gradient(180deg,#ff8fb5,#E2456B)} .b2{background:linear-gradient(180deg,#7cd4ff,#1E88C8)} .b3{background:linear-gradient(180deg,#ffe27a,#F5B301);color:#5a4300}
+.pop{animation:pop .35s forwards}
+@keyframes pop{to{transform:scale(1.6);opacity:0}}
+/* Memory */
+.memory{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:560px;margin:14px auto}
+.mcard{background:linear-gradient(180deg,#bd9bf0,var(--purple));color:#fff;border:none;border-radius:20px;font-family:inherit;font-weight:800;font-size:1.6rem;min-height:96px;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.2);transition:.2s}
+.mcard.open{background:#fff;color:var(--ink);border:4px solid var(--purple);transform:rotateY(180deg)}
+.mcard.done{background:linear-gradient(180deg,#8ede92,#2E9E44);cursor:default;transform:scale(1)}
+/* True/False */
+.tf-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.tf{font-size:2rem;min-width:170px}
+.progress{height:26px;background:#E7F3FF;border-radius:50px;overflow:hidden;margin:12px 0;border:3px solid #C9D8F5}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--yellow));transition:.3s}
+footer{text-align:center;padding:30px;color:#fff;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:28px 28px 0 0;font-weight:700;margin-top:24px;font-size:1.2rem}
+footer a{color:#fff;font-weight:800}
+.confetti{position:fixed;top:-20px;font-size:2rem;z-index:999;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.sound-toggle{position:fixed;bottom:18px;left:18px;z-index:60;background:#fff;border:4px solid var(--purple);border-radius:50%;width:72px;height:72px;font-size:2rem;cursor:pointer;box-shadow:var(--shadow)}
+@media(max-width:720px){
+  html{font-size:18px}
+  #menuBtn{display:block}
+  .links{display:none;width:100%;flex-direction:column}
+  .links.open{display:flex}
+  section.card{padding:24px 14px}
+  .btn{font-size:1.2rem;padding:16px 30px;width:100%;max-width:340px}
+  .memory{grid-template-columns:repeat(2,1fr)}
+  .balloon{width:105px;height:135px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html">🎈 Number Adventure</a>
+    <button id="menuBtn" aria-label="Menu">☰</button>
+    <nav class="links" id="links">
+      <a href="index.html">🏠 Home</a>
+      <a href="#game-balloon">🎈 Balloon Pop</a>
+      <a href="#game-memory">🃏 Memory</a>
+      <a href="#game-tf">⚡ True / False</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-card">
+    <div class="mascots">🎮 🃏 🎈 🏆</div>
+    <h1>Educational <span>Games Zone!</span> 🎉</h1>
+    <p>Three super-fun games to train your math brain — pop, match and decide fast! Every win earns you stars ⭐</p>
+  </div>
+</div>
+
+<div class="stars-bar">
+  <div class="score-chip">⭐ My Stars: <span id="totalStars">0</span></div>
+  <div class="score-chip">🏆 Best Streak: <span id="best">0</span></div>
+  <div class="score-chip">🎮 Games Won: <span id="wins">0</span></div>
+</div>
+
+<main>
+  <!-- GAME 1 -->
+  <section class="card" id="game-balloon" style="border-bottom-color:var(--pink)">
+    <span class="badge b-pink">Game 1: Balloon Pop 🎈</span>
+    <h2>Pop the balloon with the correct answer!</h2>
+    <p class="sub">Solve the equation, then tap the right balloon before it flies away!</p>
+    <div class="row">
+      <label class="big" for="bLevel">Level:</label>
+      <select id="bLevel">
+        <option value="10">🐣 Easy (to 10)</option>
+        <option value="20" selected>🐥 Medium (to 20)</option>
+        <option value="50">🦁 Champion (to 50)</option>
+      </select>
+    </div>
+    <div class="quiz-big" id="bQ">5 + 3 = ?</div>
+    <div class="balloons" id="bBalloons"></div>
+    <div class="feedback" id="bFb"></div>
+  </section>
+
+  <!-- GAME 2 -->
+  <section class="card" id="game-memory" style="border-bottom-color:var(--blue)">
+    <span class="badge b-blue">Game 2: Memory Match 🃏</span>
+    <h2>Find the pairs: expression ↔ answer!</h2>
+    <p class="sub">Flip two cards. If they match (like <b>3 × 4</b> and <b>12</b>), they stay green!</p>
+    <div class="row">
+      <button class="btn btn-blue" onclick="newMemory()">🎲 New Game</button>
+      <div class="score-chip">Moves: <span id="mMoves">0</span> • Pairs: <span id="mPairs">0</span>/4</div>
+    </div>
+    <div class="memory" id="mGrid"></div>
+    <div class="feedback" id="mFb"></div>
+  </section>
+
+  <!-- GAME 3 -->
+  <section class="card" id="game-tf" style="border-bottom-color:var(--green)">
+    <span class="badge b-green">Game 3: True or False Rush ⚡</span>
+    <h2>10 questions — decide fast, hero!</h2>
+    <p class="sub">Is the equation correct? 7 or more right = 2 bonus stars! 🌟</p>
+    <div class="progress"><div id="tfBar"></div></div>
+    <div class="quiz-big" id="tfQ">Press Start!</div>
+    <div class="tf-btns">
+      <button class="btn btn-green tf" onclick="answerTF(true)">✅ True</button>
+      <button class="btn btn-pink tf" onclick="answerTF(false)">❌ False</button>
+    </div>
+    <div class="row"><button class="btn btn-orange" onclick="newTF()">▶️ Start / Restart</button></div>
+    <div class="feedback" id="tfFb"></div>
+  </section>
+</main>
+
+<footer>
+  <a href="index.html">🏠 Home</a> •
+  <a href="#game-balloon">🎈 Balloon Pop</a> •
+  <a href="#game-memory">🃏 Memory</a> •
+  <a href="#game-tf">⚡ True / False</a><br>
+  Made with ❤️ for little champions in Saudi Arabia | Number Adventure 2026 🎈
+</footer>
+<button class="sound-toggle" id="soundBtn" title="Sound on/off" onclick="toggleSound()">🔊</button>
+
+<script>
+// ===== shared: sounds, cheers, stars (same identity as index.html) =====
+let soundOn = true, stars = 0, best = 0, streak = 0, wins = 0;
+try{ stars=+localStorage.getItem('stars')||0; best=+localStorage.getItem('best')||0; wins=+localStorage.getItem('wins')||0; }catch(e){}
+const totalStars=document.getElementById('totalStars'), bestEl=document.getElementById('best'), winsEl=document.getElementById('wins');
+function save(){ try{localStorage.setItem('stars',stars);localStorage.setItem('best',best);localStorage.setItem('wins',wins);}catch(e){} updateHud(); }
+function updateHud(){ totalStars.textContent=stars; bestEl.textContent=best; winsEl.textContent=wins; }
+updateHud();
+function toggleSound(){ soundOn=!soundOn; soundBtn.textContent=soundOn?'🔊':'🔇'; if(!soundOn){try{speechSynthesis.cancel();}catch(e){}} }
+let AC=null;
+function ac(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(AC&&AC.state==='suspended')AC.resume(); return AC; }
+function tone(freq,dur,type,when,vol){
+  if(!soundOn) return; const ctx=ac(); if(!ctx) return;
+  try{
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type=type||'sine'; o.frequency.value=freq;
+    const t=ctx.currentTime+(when||0);
+    g.gain.setValueAtTime(vol||.28,t); g.gain.exponentialRampToValueAtTime(.001,t+dur);
+    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t+dur+.02);
+  }catch(e){}
+}
+function happySound(){ tone(523,.16,'triangle',0); tone(659,.16,'triangle',.14); tone(784,.16,'triangle',.28); tone(1047,.4,'triangle',.42); tone(1319,.2,'sine',.55,.15); tone(1568,.35,'sine',.68,.15); }
+function sadSound(){ tone(330,.22,'sine',0); tone(262,.35,'sine',.2); }
+function clapSound(){
+  if(!soundOn) return; const ctx=ac(); if(!ctx) return;
+  try{
+    for(let k=0;k<4;k++){
+      const t=ctx.currentTime+k*.13, dur=.09;
+      const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate), d=buf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+      const s=ctx.createBufferSource(); s.buffer=buf;
+      const f=ctx.createBiquadFilter(); f.type='highpass'; f.frequency.value=1500;
+      const g=ctx.createGain(); g.gain.value=.5;
+      s.connect(f); f.connect(g); g.connect(ctx.destination); s.start(t);
+    }
+  }catch(e){}
+}
+function celebrate(){ happySound(); clapSound(); }
+function speak(text){ try{ if(!soundOn) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=.95; u.pitch=1.15; speechSynthesis.speak(u);}catch(e){} }
+const praise=['Amazing, champion! 🎉','Excellent! You are a star! ⭐','Fantastic! Give yourself a clap! 👏','Super! You are so smart! 🧠','Wow! Math hero! 🦸'];
+const comfort=['No worries, hero — try again! 💪','So close! One more try! 🍀'];
+function confetti(n){
+  n=n||50;
+  const em=['🎉','⭐','🎈','🌟','🍬','💛','💙','💖','👏','🏆'];
+  for(let i=0;i<n;i++){
+    const s=document.createElement('div'); s.className='confetti';
+    s.textContent=em[Math.floor(Math.random()*em.length)];
+    s.style.left=Math.random()*100+'vw';
+    s.style.animationDuration=(1.5+Math.random()*1.5)+'s';
+    document.body.appendChild(s); setTimeout(()=>s.remove(),3200);
+  }
+}
+function winStar(n){ stars+=n; streak+=n; if(streak>best)best=streak; save(); }
+function winGame(){ wins++; save(); }
+function loseStreak(){ streak=0; save(); }
+
+// ===== GAME 1: Balloon Pop =====
+const bQ=document.getElementById('bQ'), bBalloons=document.getElementById('bBalloons'), bFb=document.getElementById('bFb');
+let bAns=0;
+function newBalloon(){
+  const max=+document.getElementById('bLevel').value;
+  const op=Math.random()<.5?'+':'-';
+  let a,b;
+  if(op==='+'){ a=1+Math.floor(Math.random()*max); b=1+Math.floor(Math.random()*max); bAns=a+b; }
+  else{ a=1+Math.floor(Math.random()*max); b=1+Math.floor(Math.random()*a); bAns=a-b; }
+  bQ.textContent=a+' '+op+' '+b+' = ?';
+  const opts=new Set([bAns]);
+  while(opts.size<3){ const d=bAns+(Math.floor(Math.random()*7)-3); if(d>=0&&d!==bAns)opts.add(d); }
+  const arr=[...opts].sort(()=>Math.random()-.5);
+  bBalloons.innerHTML='';
+  arr.forEach((v,i)=>{
+    const btn=document.createElement('button');
+    btn.className='balloon b'+(i+1);
+    btn.innerHTML='🎈<span class="n">'+v+'</span>';
+    btn.onclick=()=>popBalloon(btn,v);
+    bBalloons.appendChild(btn);
+  });
+  bFb.textContent=''; bFb.className='feedback';
+}
+function popBalloon(btn,v){
+  if(v===bAns){
+    btn.classList.add('pop'); tone(900,.2,'triangle',0);
+    bFb.className='feedback good'; bFb.textContent=praise[Math.floor(Math.random()*praise.length)];
+    celebrate(); confetti(45); speak('Amazing! Great job!'); winStar(1);
+    setTimeout(newBalloon,1300);
+  }else{
+    btn.classList.add('shake'); setTimeout(()=>btn.classList.remove('shake'),400);
+    bFb.className='feedback bad'; bFb.textContent=comfort[Math.floor(Math.random()*comfort.length)];
+    sadSound(); loseStreak();
+  }
+}
+document.getElementById('bLevel').onchange=newBalloon;
+newBalloon();
+
+// ===== GAME 2: Memory Match =====
+const mGrid=document.getElementById('mGrid'), mFb=document.getElementById('mFb');
+let first=null, lock=false, moves=0, pairs=0;
+function newMemory(){
+  const facts=[];
+  const used=new Set();
+  while(facts.length<4){
+    const a=2+Math.floor(Math.random()*7), b=2+Math.floor(Math.random()*7), r=a*b;
+    if(used.has(r)) continue;
+    used.add(r);
+    facts.push({q:a+' × '+b, a:''+r});
+  }
+  let cards=[];
+  facts.forEach((f,i)=>{ cards.push({t:f.q,k:i}); cards.push({t:f.a,k:i}); });
+  cards.sort(()=>Math.random()-.5);
+  mGrid.innerHTML=''; first=null; lock=false; moves=0; pairs=0;
+  document.getElementById('mMoves').textContent='0'; document.getElementById('mPairs').textContent='0';
+  mFb.textContent=''; mFb.className='feedback';
+  cards.forEach(c=>{
+    const d=document.createElement('button');
+    d.className='mcard'; d.textContent='?'; d.dataset.k=c.k; d.dataset.t=c.t;
+    d.onclick=()=>flipCard(d);
+    mGrid.appendChild(d);
+  });
+}
+function flipCard(d){
+  if(lock||d.classList.contains('open')||d.classList.contains('done')) return;
+  d.classList.add('open'); d.textContent=d.dataset.t; tone(600,.1,'triangle',0);
+  if(!first){ first=d; return; }
+  moves++; document.getElementById('mMoves').textContent=moves;
+  if(first.dataset.k===d.dataset.k){
+    const a=first, b=d; first=null; lock=true;
+    setTimeout(()=>{
+      a.classList.add('done'); b.classList.add('done'); lock=false;
+      tone(880,.2,'triangle',0);
+      pairs++; document.getElementById('mPairs').textContent=pairs;
+      if(pairs===4){
+        mFb.className='feedback good'; mFb.textContent='🏆 You found all pairs in '+moves+' moves!';
+        celebrate(); confetti(60); speak('Fantastic! You won the memory game!'); winStar(2); winGame();
+      }
+    },500);
+  }else{
+    const a=first, b=d; first=null; lock=true;
+    setTimeout(()=>{ a.classList.remove('open'); b.classList.remove('open'); a.textContent='?'; b.textContent='?'; lock=false; },800);
+  }
+}
+newMemory();
+
+// ===== GAME 3: True or False Rush =====
+const tfQ=document.getElementById('tfQ'), tfFb=document.getElementById('tfFb'), tfBar=document.getElementById('tfBar');
+let tfRound=0, tfScore=0, tfTruth=false, tfActive=false;
+function newTF(){
+  tfRound=0; tfScore=0; tfActive=true; tfFb.textContent=''; tfFb.className='feedback';
+  nextTF();
+}
+function nextTF(){
+  if(tfRound>=10){
+    tfActive=false; tfQ.textContent='Done! Score: '+tfScore+'/10 🎯';
+    tfBar.style.width='100%';
+    if(tfScore>=7){ tfFb.className='feedback good'; tfFb.textContent='🌟 Lightning brain! +2 bonus stars!'; celebrate(); confetti(60); speak('Wow! Lightning brain!'); winStar(2); winGame(); }
+    else if(tfScore>=4){ tfFb.className='feedback good'; tfFb.textContent='👍 Good job! +1 star!'; celebrate(); confetti(30); winStar(1); }
+    else{ tfFb.className='feedback bad'; tfFb.textContent='💪 Good try! Practice and play again!'; sadSound(); }
+    return;
+  }
+  const a=1+Math.floor(Math.random()*12), b=1+Math.floor(Math.random()*12);
+  const real=a+b;
+  tfTruth=Math.random()<.5;
+  const shown=tfTruth?real:real+(Math.random()<.5?1:-1)*(1+Math.floor(Math.random()*2));
+  tfQ.textContent=a+' + '+b+' = '+shown+' ?';
+  tfBar.style.width=(tfRound*10)+'%';
+}
+function answerTF(v){
+  if(!tfActive) return;
+  if(v===tfTruth){
+    tfScore++; tfRound++;
+    tone(784,.15,'triangle',0); tone(1047,.2,'triangle',.12);
+    tfFb.className='feedback good'; tfFb.textContent='✅ Correct!';
+    winStar(1);
+  }else{
+    tfRound++;
+    tfFb.className='feedback bad'; tfFb.textContent='❌ Oops! Keep going!';
+    sadSound(); loseStreak();
+  }
+  setTimeout(nextTF,600);
+}
+
+// menu
+menuBtn.onclick=()=>links.classList.toggle('open');
+document.querySelectorAll('.links a').forEach(a=>a.onclick=()=>links.classList.remove('open'));
+</script>
+</body>
+</html>
