@@ -13,6 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="Number Adventure">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="lang.js"></script>
 <style>
 :root{
   --yellow:#FFD93D; --blue:#29A9E1; --sky:#BFE9FF; --pink:#FF6FA5; --green:#4CAF50;
@@ -121,6 +122,7 @@ footer{text-align:center;padding:30px;color:#fff;background:linear-gradient(90de
       <a href="#sec-eq">🧮 Equations</a>
       <a href="games.html">🎮 Games</a>
       <a href="about.html">💛 About</a>
+      <button id="langBtn" onclick="toggleLang()" style="background:#fff;border:3px solid #1E3A5F;border-radius:50px;padding:10px 20px;font-family:inherit;font-weight:800;font-size:1.05rem;cursor:pointer;white-space:nowrap">🌐 عربي</button>
     </nav>
   </div>
 </header>
@@ -339,7 +341,7 @@ function speak(text){
   try{
     if(!soundOn) return;
     speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=.95; u.pitch=1.15;
+    const u=new SpeechSynthesisUtterance(text); u.lang=(typeof LANG!=="undefined"&&LANG==="ar")?"ar-SA":"en-US"; u.rate=.95; u.pitch=1.15;
     speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -361,12 +363,12 @@ function confetti(n){
 }
 function fb(el,ok){
   el.classList.remove('good','bad','shake'); void el.offsetWidth;
-  if(ok){ el.className='feedback good'; el.textContent=praise[Math.floor(Math.random()*praise.length)]; }
-  else{ el.className='feedback bad shake'; el.textContent=comfort[Math.floor(Math.random()*comfort.length)]; }
+  if(ok){ el.className='feedback good'; el.textContent=P("praise")[Math.floor(Math.random()*P("praise").length)]; }
+  else{ el.className='feedback bad shake'; el.textContent=P("comfort")[Math.floor(Math.random()*P("comfort").length)]; }
 }
 function correctFX(msg){
   celebrate(); confetti(55);
-  speak(speakPraise[Math.floor(Math.random()*speakPraise.length)]);
+  speak(P("speakPraise")[Math.floor(Math.random()*P("speakPraise").length)]);
   addStar(1);
 }
 
@@ -387,11 +389,11 @@ function newCount(){
 }
 function checkCount(){
   const v=+countAnswer.value;
-  if(countAnswer.value===''||isNaN(v)) { countFb.className='feedback bad'; countFb.textContent='✏️ Write the number first, hero!'; tone(240,.2,'sine',0); return; }
+  if(countAnswer.value===''||isNaN(v)) { countFb.className='feedback bad'; countFb.textContent=t('write_first'); tone(240,.2,'sine',0); return; }
   if(v===countTarget){ fb(countFb,true); correctFX(); setTimeout(newCount,1500); }
-  else{ fb(countFb,false); sadSound(); speak('Try again, you can do it!'); failStreak(); }
+  else{ fb(countFb,false); sadSound(); speak(t('try_again')); failStreak(); }
 }
-function speakCount(){ speak('Count with me! The number is '+countTarget); }
+function speakCount(){ speak(t('count_with_me')+countTarget); }
 function buildPad(padId,inputId){
   const pad=document.getElementById(padId), inp=document.getElementById(inputId);
   pad.innerHTML='';
@@ -430,12 +432,12 @@ function analyzePlace(){
   document.getElementById('d10').textContent=d10; document.getElementById('v10').textContent=d10+' × 10 = '+(d10*10);
   document.getElementById('d100').textContent=d100; document.getElementById('v100').textContent=d100+' × 100 = '+(d100*100);
   document.getElementById('d1000').textContent=d1000; document.getElementById('v1000').textContent=d1000+' × 1000 = '+(d1000*1000);
-  document.getElementById('placeReading').textContent='📖 It reads: '+enWords(n);
-  document.getElementById('placeExpanded').textContent='🧩 Expanded: '+n+' = '+(d1000*1000)+' + '+(d100*100)+' + '+(d10*10)+' + '+d1;
+  document.getElementById('placeReading').textContent=t('reads')+numWords(n);
+  document.getElementById('placeExpanded').textContent=t('expanded')+n+' = '+(d1000*1000)+' + '+(d100*100)+' + '+(d10*10)+' + '+d1;
   tone(700,.12,'triangle',0);
 }
-function randomPlace(){ placeInput.value=Math.floor(Math.random()*9999)+1; analyzePlace(); speak('New number! '+enWords(+placeInput.value)); }
-function speakPlace(){ speak('The number is '+enWords(+placeInput.value||0)); }
+function randomPlace(){ placeInput.value=Math.floor(Math.random()*9999)+1; analyzePlace(); speak(t('new_num_say')+numWords(+placeInput.value)); }
+function speakPlace(){ speak(t('the_num_is')+numWords(+placeInput.value||0)); }
 analyzePlace();
 
 // ---------- 3: operations ----------
@@ -454,9 +456,9 @@ function newQuiz(){
 }
 function checkQuiz(){
   const v=+quizA.value;
-  if(quizA.value===''||isNaN(v)){ quizFb.className='feedback bad'; quizFb.textContent='✏️ Write your answer first!'; return; }
-  if(v===qAns){ fb(quizFb,true); quizFb.textContent+=' The answer is '+qAns+' ✅'; correctFX(); setTimeout(newQuiz,1400); }
-  else{ fb(quizFb,false); sadSound(); speak('Try again!'); failStreak(); }
+  if(quizA.value===''||isNaN(v)){ quizFb.className='feedback bad'; quizFb.textContent=t('write_ans'); return; }
+  if(v===qAns){ fb(quizFb,true); quizFb.textContent+=' '+t('answer_is')+' '+qAns+' ✅'; correctFX(); setTimeout(newQuiz,1400); }
+  else{ fb(quizFb,false); sadSound(); speak(t('try_again')); failStreak(); }
 }
 const quizQ=document.getElementById('quizQ'),quizA=document.getElementById('quizA'),quizFb=document.getElementById('quizFb');
 quizA.addEventListener('keydown',e=>{if(e.key==='Enter')checkQuiz();});
@@ -464,16 +466,16 @@ newQuiz();
 
 // ---------- 4: times tables ----------
 const tablePick=document.getElementById('tablePick'), timesGrid=document.getElementById('timesGrid');
-for(let i=1;i<=12;i++){ const o=document.createElement('option'); o.value=i; o.textContent='Table '+i+(i<=5?' 🌟':''); tablePick.appendChild(o); }
+for(let i=1;i<=12;i++){ const o=document.createElement('option'); o.value=i; o.textContent=t("table_word")+" "+i+(i<=5?" 🌟":""); tablePick.appendChild(o); }
 tablePick.value=3;
 function renderTable(){
-  const t=+tablePick.value; timesGrid.innerHTML='';
+  const tt=+tablePick.value; timesGrid.innerHTML='';
   for(let i=1;i<=12;i++){
     const d=document.createElement('div'); d.className='tcard';
-    d.innerHTML=t+' × '+i+' = ?<small>Tap to reveal 👀</small>';
+    d.innerHTML=tt+' × '+i+' = ?<small>'+t("tap_reveal")+'</small>';
     d.onclick=()=>{
       const open=d.classList.toggle('reveal');
-      d.innerHTML=open?(t+' × '+i+' = '+(t*i)+' 🎉'):t+' × '+i+' = ?<small>Tap to reveal 👀</small>';
+      d.innerHTML=open?(tt+' × '+i+' = '+(tt*i)+' 🎉'):tt+' × '+i+' = ?<small>'+t("tap_reveal")+'</small>';
       if(open)tone(600+i*25,.12,'triangle',0);
     };
     timesGrid.appendChild(d);
@@ -488,9 +490,9 @@ function startTableQuiz(){
 }
 function checkTableQuiz(){
   const v=+tqA.value;
-  if(tqA.value===''){ tqFb.className='feedback bad'; tqFb.textContent='✏️ Write the answer!'; return; }
+  if(tqA.value===''){ tqFb.className='feedback bad'; tqFb.textContent=t('write_table'); return; }
   if(v===tqAns){ fb(tqFb,true); correctFX(); setTimeout(startTableQuiz,1300); }
-  else{ fb(tqFb,false); tqFb.textContent+=' (Hint: check the cards above 👆)'; sadSound(); failStreak(); }
+  else{ fb(tqFb,false); tqFb.textContent+=' '+t("oops_hint"); sadSound(); failStreak(); }
 }
 const tqQ=document.getElementById('tqQ'),tqA=document.getElementById('tqA'),tqFb=document.getElementById('tqFb'),tableQuizBox=document.getElementById('tableQuizBox');
 tqA.addEventListener('keydown',e=>{if(e.key==='Enter')checkTableQuiz();});
@@ -508,19 +510,19 @@ const stories=[
 ];
 let storyIdx=0;
 function newStory(){
-  storyIdx=Math.floor(Math.random()*stories.length);
-  const s=stories[storyIdx];
+  storyIdx=Math.floor(Math.random()*curStories().length);
+  const s=curStories()[storyIdx];
   storyTitle.textContent=s.t; storyText.textContent=s.q;
   storyA.value=''; storyFb.textContent=''; storyFb.className='feedback';
   storyHint.style.display='none'; storyHint.textContent='💡 '+s.hint;
   tone(600,.12,'triangle',0);
 }
-function toggleHint(){ storyHint.style.display=storyHint.style.display==='block'?'none':'block'; speak('Here is a hint to help you think!'); }
+function toggleHint(){ storyHint.style.display=storyHint.style.display==='block'?'none':'block'; speak(t('hint_say')); }
 function checkStory(){
-  const v=+storyA.value, s=stories[storyIdx];
-  if(storyA.value===''){ storyFb.className='feedback bad'; storyFb.textContent='✏️ Write your answer first, detective!'; return; }
-  if(v===s.a){ fb(storyFb,true); storyFb.textContent+=' Brilliant thinking! 🧠'; correctFX(); setTimeout(newStory,1800); }
-  else{ fb(storyFb,false); storyFb.textContent+=' Read again and use the hint 💡'; sadSound(); failStreak(); }
+  const v=+storyA.value, s=curStories()[storyIdx];
+  if(storyA.value===''){ storyFb.className='feedback bad'; storyFb.textContent=t('write_det'); return; }
+  if(v===s.a){ fb(storyFb,true); storyFb.textContent+=' '+t('brilliant'); correctFX(); setTimeout(newStory,1800); }
+  else{ fb(storyFb,false); storyFb.textContent+=' '+t('read_hint'); sadSound(); failStreak(); }
 }
 const storyTitle=document.getElementById('storyTitle'),storyText=document.getElementById('storyText'),storyA=document.getElementById('storyA'),storyFb=document.getElementById('storyFb'),storyHint=document.getElementById('storyHint');
 storyA.addEventListener('keydown',e=>{if(e.key==='Enter')checkStory();});
@@ -531,19 +533,19 @@ let eqLevel=1, eqX=0, eqText='', eqStepsArr=[];
 function setEqLevel(l,btn){ eqLevel=l; document.querySelectorAll('#sec-eq .diff').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); newEq(); }
 function newEq(){
   let a,b,c;
-  if(eqLevel===1){ const x=1+Math.floor(Math.random()*12); a=1+Math.floor(Math.random()*15); b=x+a; eqX=x; eqText='x + '+a+' = '+b; eqStepsArr=['Step 1: x + '+a+' = '+b,'Step 2: x = '+b+' − '+a,'Step 3: x = '+x+' 🎉']; }
-  else if(eqLevel===2){ const x=1+Math.floor(Math.random()*9); a=2+Math.floor(Math.random()*8); b=a*x; eqX=x; eqText=a+'·x = '+b+'  (meaning '+a+' times x)'; eqStepsArr=['Step 1: '+a+'·x = '+b,'Step 2: x = '+b+' ÷ '+a,'Step 3: x = '+x+' 🎉']; }
-  else{ const x=1+Math.floor(Math.random()*9); a=2+Math.floor(Math.random()*5); b=1+Math.floor(Math.random()*10); c=a*x+b; eqX=x; eqText=a+'·x + '+b+' = '+c; eqStepsArr=['Step 1: '+a+'·x + '+b+' = '+c,'Step 2: '+a+'·x = '+c+' − '+b+' = '+(c-b),'Step 3: x = '+(c-b)+' ÷ '+a+' = '+x+' 🎉']; }
+  if(eqLevel===1){ const x=1+Math.floor(Math.random()*12); a=1+Math.floor(Math.random()*15); b=x+a; eqX=x; eqText='x + '+a+' = '+b; eqStepsArr=[t("step_w")+' 1: x + '+a+' = '+b,t("step_w")+' 2: x = '+b+' − '+a,t("step_w")+' 3: x = '+x+' 🎉']; }
+  else if(eqLevel===2){ const x=1+Math.floor(Math.random()*9); a=2+Math.floor(Math.random()*8); b=a*x; eqX=x; eqText=a+'·x = '+b+'  (meaning '+a+' times x)'; eqStepsArr=[t("step_w")+' 1: '+a+'·x = '+b,t("step_w")+' 2: x = '+b+' ÷ '+a,t("step_w")+' 3: x = '+x+' 🎉']; }
+  else{ const x=1+Math.floor(Math.random()*9); a=2+Math.floor(Math.random()*5); b=1+Math.floor(Math.random()*10); c=a*x+b; eqX=x; eqText=a+'·x + '+b+' = '+c; eqStepsArr=[t("step_w")+' 1: '+a+'·x + '+b+' = '+c,t("step_w")+' 2: '+a+'·x = '+c+' − '+b+' = '+(c-b),t("step_w")+' 3: x = '+(c-b)+' ÷ '+a+' = '+x+' 🎉']; }
   eqQ.textContent=eqText; eqA.value=''; eqFb.textContent=''; eqFb.className='feedback';
   eqSteps.style.display='none'; eqSteps.innerHTML=eqStepsArr.join('<br>');
 }
 function checkEq(){
   const v=+eqA.value;
-  if(eqA.value===''){ eqFb.className='feedback bad'; eqFb.textContent='✏️ What is x, hero?'; return; }
+  if(eqA.value===''){ eqFb.className='feedback bad'; eqFb.textContent=t('write_x'); return; }
   if(v===eqX){ fb(eqFb,true); eqFb.textContent+=' x = '+eqX+' ✅'; correctFX(); setTimeout(newEq,1600); }
-  else{ fb(eqFb,false); sadSound(); speak('Not quite. Press Show Steps for help!'); failStreak(); }
+  else{ fb(eqFb,false); sadSound(); speak(t('not_quite')); failStreak(); }
 }
-function toggleEqSteps(){ eqSteps.style.display=eqSteps.style.display==='block'?'none':'block'; speak('Look at the steps and try to understand!'); }
+function toggleEqSteps(){ eqSteps.style.display=eqSteps.style.display==='block'?'none':'block'; speak(t('steps_say')); }
 const eqQ=document.getElementById('eqQ'),eqA=document.getElementById('eqA'),eqFb=document.getElementById('eqFb'),eqSteps=document.getElementById('eqSteps');
 eqA.addEventListener('keydown',e=>{if(e.key==='Enter')checkEq();});
 newEq();
@@ -551,6 +553,9 @@ newEq();
 // menu
 menuBtn.onclick=()=>links.classList.toggle('open');
 document.querySelectorAll('.links a').forEach(a=>a.onclick=()=>links.classList.remove('open'));
+// language refresh + init
+function refreshDynamic(){ try{newCount();}catch(e){} try{analyzePlace();}catch(e){} try{newQuiz();}catch(e){} try{renderTable();}catch(e){} try{newStory();}catch(e){} try{newEq();}catch(e){} }
+applyLang();
 </script>
 </body>
 </html>

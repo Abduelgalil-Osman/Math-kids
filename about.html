@@ -6,6 +6,7 @@
 <title>About Us 💛 | Number Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="lang.js"></script>
 <style>
 :root{
   --yellow:#FFD93D; --blue:#29A9E1; --pink:#FF6FA5; --green:#4CAF50;
@@ -72,6 +73,7 @@ footer a{color:#fff;font-weight:800}
       <a href="index.html">🏠 Home</a>
       <a href="games.html">🎮 Games</a>
       <a href="about.html">💛 About Us</a>
+      <button id="langBtn" onclick="toggleLang()" style="background:#fff;border:3px solid #1E3A5F;border-radius:50px;padding:10px 20px;font-family:inherit;font-weight:800;font-size:1.05rem;cursor:pointer;white-space:nowrap">🌐 عربي</button>
     </nav>
   </div>
 </header>
@@ -142,6 +144,7 @@ footer a{color:#fff;font-weight:800}
 <script>
 menuBtn.onclick=()=>links.classList.toggle('open');
 document.querySelectorAll('.links a').forEach(a=>a.onclick=()=>links.classList.remove('open'));
+applyLang();
 </script>
 </body>
 </html>
